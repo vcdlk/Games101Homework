@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/home/vcdlk/GAMES101_Homework_S2021/Homework2/code/build",
+  "command": "/usr/sbin/c++  -isystem /usr/include/opencv4 -std=gnu++17 -o CMakeFiles/Rasterizer.dir/main.cpp.o -c /home/vcdlk/GAMES101_Homework_S2021/Homework2/code/main.cpp",
+  "file": "/home/vcdlk/GAMES101_Homework_S2021/Homework2/code/main.cpp",
+  "output": "CMakeFiles/Rasterizer.dir/main.cpp.o"
+},
+{
+  "directory": "/home/vcdlk/GAMES101_Homework_S2021/Homework2/code/build",
+  "command": "/usr/sbin/c++  -isystem /usr/include/opencv4 -std=gnu++17 -o CMakeFiles/Rasterizer.dir/rasterizer.cpp.o -c /home/vcdlk/GAMES101_Homework_S2021/Homework2/code/rasterizer.cpp",
+  "file": "/home/vcdlk/GAMES101_Homework_S2021/Homework2/code/rasterizer.cpp",
+  "output": "CMakeFiles/Rasterizer.dir/rasterizer.cpp.o"
+},
+{
+  "directory": "/home/vcdlk/GAMES101_Homework_S2021/Homework2/code/build",
+  "command": "/usr/sbin/c++  -isystem /usr/include/opencv4 -std=gnu++17 -o CMakeFiles/Rasterizer.dir/Triangle.cpp.o -c /home/vcdlk/GAMES101_Homework_S2021/Homework2/code/Triangle.cpp",
+  "file": "/home/vcdlk/GAMES101_Homework_S2021/Homework2/code/Triangle.cpp",
+  "output": "CMakeFiles/Rasterizer.dir/Triangle.cpp.o"
+}
+]
