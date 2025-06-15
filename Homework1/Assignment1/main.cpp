@@ -36,18 +36,23 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
   // Students will implement this function
 
   float radian = (eye_fov / 365) * (2 * MY_PI);
-
+  // opencv 中
+  // 右侧是x轴正方向，y轴正方向向下，
+  // 这就导致 y轴和z轴是相反的和推到过程中
+  // 修改分两点
+  // 1：不用写，纠正z轴
   // zNear = -zNear;
   // zFar = -zFar;
+  // 2：求yTop的时候乘以 -1，纠正Y轴
 
-  float yTop = std::tan(radian / 2) * zNear;
+  float yTop = -1 * (std::tan(radian / 2) * zNear); // -1 兼容opencv
   float yBottom = -yTop;
 
-  float xLeft = (yTop - yBottom) / aspect_ratio / 2;
+  float xLeft = -1 * ((yTop - yBottom) * aspect_ratio / 2);
   float xRight = -xLeft;
 
   Eigen::Matrix4f scale_mat;
-  scale_mat << 2 / (xLeft - xRight), 0, 0, 0, 0, 2 / (yTop - yBottom), 0, 0, 0,
+  scale_mat << 2 / (xRight - xLeft), 0, 0, 0, 0, 2 / (yTop - yBottom), 0, 0, 0,
       0, 2 / (zNear - zFar), 0, 0, 0, 0, 1;
   // std::cout << "scale_mat: \n" << scale_mat << std::endl;
 
