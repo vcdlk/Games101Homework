@@ -33,21 +33,19 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle) {
 
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar) {
-  // Students will implement this function
-
   float radian = (eye_fov / 365) * (2 * MY_PI);
 
-  // zNear = -zNear;
-  // zFar = -zFar;
+  zNear = -zNear;
+  zFar = -zFar;
 
   float yTop = std::tan(radian / 2) * zNear;
   float yBottom = -yTop;
 
-  float xLeft = (yTop - yBottom) / aspect_ratio / 2;
+  float xLeft = -((yTop - yBottom) * aspect_ratio) / 2;
   float xRight = -xLeft;
 
   Eigen::Matrix4f scale_mat;
-  scale_mat << 2 / (xLeft - xRight), 0, 0, 0, 0, 2 / (yTop - yBottom), 0, 0, 0,
+  scale_mat << 2 / (xRight - xLeft), 0, 0, 0, 0, 2 / (yTop - yBottom), 0, 0, 0,
       0, 2 / (zNear - zFar), 0, 0, 0, 0, 1;
   // std::cout << "scale_mat: \n" << scale_mat << std::endl;
 
@@ -63,7 +61,10 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
 
   // std::cout << "persp_mat: \n" << persp_mat << std::endl;
 
-  Eigen::Matrix4f projection = scale_mat * move_mat * persp_mat;
+  Eigen::Matrix4f Mt(4, 4);
+  Mt << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1;
+
+  Eigen::Matrix4f projection = scale_mat * move_mat * persp_mat * Mt;
 
   std::cout << "projection: \n" << projection << std::endl;
 
