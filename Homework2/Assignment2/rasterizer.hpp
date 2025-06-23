@@ -8,10 +8,11 @@
 #include "global.hpp"
 #include <algorithm>
 #include <eigen3/Eigen/Eigen>
+#include <vector>
 using namespace Eigen;
 
 namespace rst {
-enum class Buffers { Color = 1, Depth = 2 };
+enum class Buffers { Color = 1, Depth = 2, SSAA_Depth = 4 };
 
 inline Buffers operator|(Buffers a, Buffers b) {
   return Buffers((int)a | (int)b);
@@ -83,6 +84,9 @@ private:
   std::vector<Eigen::Vector3f> frame_buf;
 
   std::vector<float> depth_buf;
+  std::vector<std::vector<float>> ssaa_depth_buf;
+  std::vector<Eigen::Vector3f> ssaa_color_buf;
+
   int get_index(int x, int y);
 
   int width, height;
