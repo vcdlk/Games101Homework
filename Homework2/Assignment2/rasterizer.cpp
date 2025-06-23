@@ -12,7 +12,7 @@
 
 
 
-#define SSAA true
+#define SSAA false
 
 
 
