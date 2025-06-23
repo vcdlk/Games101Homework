@@ -72,13 +72,14 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
 
   Eigen::Matrix4f projection = scale_mat * move_mat * persp_mat;
 
-  std::cout << "projection: \n" << projection << std::endl;
+//   std::cout << "projection: \n" << projection << std::endl;
 
   return projection;
 }
 
 int main(int argc, const char** argv)
 {
+    std::ios::sync_with_stdio(false);
     float angle = 0;
     bool command_line = false;
     std::string filename = "output.png";
@@ -129,7 +130,7 @@ int main(int argc, const char** argv)
 
     if (command_line)
     {
-        r.clear(rst::Buffers::Color | rst::Buffers::Depth);
+        r.clear(rst::Buffers::Color | rst::Buffers::Depth | rst::Buffers::SSAA_Depth);
 
         r.set_model(get_model_matrix(angle));
         r.set_view(get_view_matrix(eye_pos));
@@ -147,7 +148,7 @@ int main(int argc, const char** argv)
 
     while(key != 27)
     {
-        r.clear(rst::Buffers::Color | rst::Buffers::Depth);
+        r.clear(rst::Buffers::Color | rst::Buffers::Depth | rst::Buffers::SSAA_Depth);
 
         r.set_model(get_model_matrix(angle));
         r.set_view(get_view_matrix(eye_pos));
@@ -161,7 +162,7 @@ int main(int argc, const char** argv)
         cv::imshow("image", image);
         key = cv::waitKey(10);
 
-        std::cout << "frame count: " << frame_count++ << '\n';
+        // std::cout << "frame count: " << frame_count++ << '\n';
     }
 
     return 0;
