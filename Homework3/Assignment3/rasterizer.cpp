@@ -325,9 +325,9 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
                     float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
                     z_interpolated *= w_reciprocal;
                     if(z_interpolated < depth_buf[get_index(x, y)]){
-                        Eigen::Vector3f point(x, y, 1);
-                        // set_pixel(point, t.getColor());
-                        fragment_shader_payload  payload( interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &*texture : nullptr);
+                        Eigen::Vector2i point(x, y);
+                        // fragment_shader_payload  payload( interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &*texture : nullptr);
+                        fragment_shader_payload  payload;
 
                         auto pixel_color = fragment_shader(payload);
                         set_pixel(point, pixel_color);

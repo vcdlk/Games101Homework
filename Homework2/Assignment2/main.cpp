@@ -94,7 +94,7 @@ int main(int argc, const char** argv)
 
     Eigen::Vector3f eye_pos = {0,0,5};
 
-
+    // 三角形位置
     std::vector<Eigen::Vector3f> pos
             {
                     {2, 0, -2},
@@ -104,13 +104,13 @@ int main(int argc, const char** argv)
                     {2.5, 1.5, -5},
                     {-1, 0.5, -5}
             };
-
+    // 三个点的索引
     std::vector<Eigen::Vector3i> ind
             {
                     {0, 1, 2},
                     {3, 4, 5}
             };
-
+    // 三个点的颜色
     std::vector<Eigen::Vector3f> cols
             {
                     {217.0, 238.0, 185.0},
