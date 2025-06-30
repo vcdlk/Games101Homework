@@ -50,7 +50,38 @@ Eigen::Matrix4f get_model_matrix(float angle)
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
 {
     // TODO: Use the same projection matrix from the previous assignments
+  // Students will implement this function
 
+  float radian = (eye_fov / 365) * (2 * MY_PI);
+  // opencv 中
+  // 右侧是x轴正方向，y轴正方向向下，
+  // 这就导致 y轴和z轴是相反的和推到过程中
+  // 修改分两点
+  // 1：不用写
+  // zNear = -zNear;
+  // zFar = -zFar;
+  // 来纠正z轴
+  // 2：求yTop的时候乘以 -1，纠正Y轴
+
+  float yTop = -1 * (std::tan(radian / 2) * zNear); // -1 兼容opencv
+  float yBottom = -yTop;
+
+  float xLeft = -1 * ((yTop - yBottom) * aspect_ratio / 2);
+  float xRight = -xLeft;
+
+  Eigen::Matrix4f scale_mat;
+  scale_mat << 2 / (xRight - xLeft), 0, 0, 0, 0, 2 / (yTop - yBottom), 0, 0, 0,
+      0, 2 / (zNear - zFar), 0, 0, 0, 0, 1;
+
+  Eigen::Matrix4f move_mat;
+  move_mat << 1, 0, 0, -(xLeft + xRight) / 2, 0, 1, 0, -(yTop + yBottom) / 2, 0,
+      0, 1, -(zFar + zNear) / 2, 0, 0, 0, 1;
+
+  Eigen::Matrix4f persp_mat;
+  persp_mat << zNear, 0, 0, 0, 0, zNear, 0, 0, 0, 0, (zFar + zNear),
+      -(zNear * zFar), 0, 0, 1, 0;
+  Eigen::Matrix4f projection = scale_mat * move_mat * persp_mat;
+  return projection;
 }
 
 Eigen::Vector3f vertex_shader(const vertex_shader_payload& payload)

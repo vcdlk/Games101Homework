@@ -89,6 +89,9 @@ namespace rst
 
         void rasterize_triangle(const Triangle& t, const std::array<Eigen::Vector3f, 3>& world_pos);
 
+        void get_bounding_box(const Triangle &t, Eigen::Vector2f *bounding_box_x,
+            Eigen::Vector2f *bounding_box_y);
+
         // VERTEX SHADER -> MVP -> Clipping -> /.W -> VIEWPORT -> DRAWLINE/DRAWTRI -> FRAGSHADER
 
     private:

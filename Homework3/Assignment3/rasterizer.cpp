@@ -256,6 +256,36 @@ static Eigen::Vector2f interpolate(float alpha, float beta, float gamma, const E
     return Eigen::Vector2f(u, v);
 }
 
+void rst::rasterizer::get_bounding_box(const Triangle &t, Eigen::Vector2f *bounding_box_x,
+    Eigen::Vector2f *bounding_box_y){
+    float bounding_box_min = std::numeric_limits<float>::min();
+    float bounding_box_max = std::numeric_limits<float>::max();
+
+    // 初始化 bounding_box 的范围，初始化是无限
+    (*bounding_box_x) =  Eigen::Vector2f(bounding_box_min, bounding_box_max); // {x_max, x_min}
+    (*bounding_box_y) =  Eigen::Vector2f(bounding_box_min, bounding_box_max);  // {y_max, y_min}
+
+    auto v = t.toVector4();
+    for(const auto& item : v){    
+        const auto& x = item[0];
+        if(x > (*bounding_box_x)[0]){
+            (*bounding_box_x)[0] = x;
+        }
+        if(x < (*bounding_box_x)[1]){
+            (*bounding_box_x)[1] = x;
+        }
+
+        const auto& y = item[1];
+        if(y > (*bounding_box_y)[0]){
+            (*bounding_box_y)[0] = y;
+        }
+        if(y < (*bounding_box_y)[1]){
+            (*bounding_box_y)[1] = y;
+        }
+    }
+
+}
+
 //Screen space rasterization
 void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eigen::Vector3f, 3>& view_pos) 
 {
@@ -280,6 +310,32 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
     // Use: Instead of passing the triangle's color directly to the frame buffer, pass the color to the shaders first to get the final color;
     // Use: auto pixel_color = fragment_shader(payload);
 
+    auto v = t.toVector4();
+    Eigen::Vector2f bounding_box_x;
+    Eigen::Vector2f bounding_box_y;
+    get_bounding_box(t, &bounding_box_x, &bounding_box_y);
+
+
+    for(int x = std::floor(bounding_box_x[1]); x < std::ceil(bounding_box_x[0]); x++){
+        for(int y = std::floor(bounding_box_y[1]); y < std::ceil(bounding_box_y[0]); y++){
+            bool res = insideTriangle(x, y, &v[0]);
+            if(res){
+                    auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                    float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+                    float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                    z_interpolated *= w_reciprocal;
+                    if(z_interpolated < depth_buf[get_index(x, y)]){
+                        Eigen::Vector3f point(x, y, 1);
+                        // set_pixel(point, t.getColor());
+                        fragment_shader_payload  payload( interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &*texture : nullptr);
+
+                        auto pixel_color = fragment_shader(payload);
+                        set_pixel(point, pixel_color);
+                        depth_buf[get_index(x, y)] = z_interpolated;
+                    }
+            }
+        }
+    }
  
 }
 
