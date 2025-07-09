@@ -193,7 +193,7 @@ Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload& payload)
       Eigen::Vector3f color_s = std::pow(std::max<float>(0, h.dot(normal)), p) * ks.cwiseProduct(color);
 
 
-      result_color = color_a + color_d + color_s;
+      result_color += color_a + color_d + color_s;
 
         // TODO: For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* 
         // components are. Then, accumulate that result on the *result_color* object.
