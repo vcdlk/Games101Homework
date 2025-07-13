@@ -1,0 +1,26 @@
+# 基础样式：Google C++ 风格
+BasedOnStyle: Google
+
+# 每行最大字符数
+ColumnLimit: 100
+
+# 缩进设置
+IndentWidth: 2
+UseTab: Never
+
+# 函数参数换行风格
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackParameters: false
+
+# 大括号换行风格 (与 Google 风格一致)
+BreakBeforeBraces: Attach
+
+# 控制语句换行
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: BeforeComma
+
+# 空格设置
+SpacesBeforeTrailingComments: 2
+SpaceBeforeCpp11BracedList: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
