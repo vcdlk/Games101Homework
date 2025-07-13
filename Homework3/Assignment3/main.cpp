@@ -120,8 +120,7 @@ Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload& payload)
     Eigen::Vector3f return_color = {0, 0, 0};
     if (payload.texture)
     {
-        // TODO: Get the texture value at the texture coordinates of the current fragment
-
+        return_color = payload.texture->getColor(payload.tex_coords[0], payload.tex_coords[1]);
     }
     Eigen::Vector3f texture_color;
     texture_color << return_color.x(), return_color.y(), return_color.z();
@@ -149,7 +148,18 @@ Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload& payload)
     {
         // TODO: For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* 
         // components are. Then, accumulate that result on the *result_color* object.
-
+        float r = (point - light.position).norm();
+        auto intensity = light.intensity / (r * r); 
+        Eigen::Vector3f light_dir = (light.position - point).normalized();
+        Eigen::Vector3f eye_dir = (eye_pos - point).normalized();
+        Eigen::Vector3f half_dir = (light_dir + eye_dir).normalized();
+        // 环境光
+        Eigen::Vector3f color_a = ka.cwiseProduct(amb_light_intensity);
+        // 漫反射光
+        Eigen::Vector3f color_d = std::max<float>(0, normal.dot(light_dir)) * kd.cwiseProduct(intensity);
+        // 高光
+        Eigen::Vector3f color_s = std::pow(std::max<float>(0, half_dir.dot(normal)), p) * ks.cwiseProduct(intensity);
+        result_color += (color_a + color_d + color_s); 
     }
 
     return result_color * 255.f;
@@ -195,7 +205,7 @@ Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload& payload)
       Eigen::Vector3f color_d = std::max<float>(0, normal.dot(light_dir)) * kd.cwiseProduct(intensity);
 
       // 高光
-      Eigen::Vector3f color_s = std::pow(std::max<float>(0, half_dir.dot(normal)), p) * ks.cwiseProduct(color);
+      Eigen::Vector3f color_s = std::pow(std::max<float>(0, half_dir.dot(normal)), p) * ks.cwiseProduct(intensity);
 
 
       result_color += (color_a + color_d + color_s); 
